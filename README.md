@@ -4,3 +4,6 @@
 Using the Bullet Physics with NGL, the demo has basic wrappers for the Physics world and rigid bodies, it also uses the ngl::Obj to load low-res collision meshes and uses higher detail ones for the drawing.
 
 For more details read the user [guide](http://bulletphysics.org/wordpress/) of Bullet.
+
+
+Note this branch is an older version and will not be maintained as it uses the old OpenGL widget
