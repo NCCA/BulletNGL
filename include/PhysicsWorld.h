@@ -10,8 +10,7 @@
 #include <ngl/Vec3.h>
 #include <ngl/Mat4.h>
 #include <ngl/Obj.h>
-#include "NGLScene.h"
-
+#include <memory>
 
 class PhysicsWorld
 {
@@ -71,11 +70,11 @@ class PhysicsWorld
     }Body;
 
 
-    btDefaultCollisionConfiguration* m_collisionConfiguration;
-    btCollisionDispatcher* m_dispatcher;
-    btBroadphaseInterface* m_overlappingPairCache ;
-    btSequentialImpulseConstraintSolver* m_solver;
-    btDiscreteDynamicsWorld* m_dynamicsWorld;
+    std::unique_ptr<btDefaultCollisionConfiguration> m_collisionConfiguration;
+    std::unique_ptr<btCollisionDispatcher> m_dispatcher;
+    std::unique_ptr<btBroadphaseInterface> m_overlappingPairCache ;
+    std::unique_ptr<btSequentialImpulseConstraintSolver> m_solver;
+    std::unique_ptr<btDiscreteDynamicsWorld> m_dynamicsWorld;
     btCollisionShape* m_groundShape;
     std::vector <Body> m_bodies;
 };
