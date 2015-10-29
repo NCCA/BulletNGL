@@ -184,11 +184,11 @@ void NGLScene::initializeGL()
   ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
   prim->createSphere("sphere",0.5,40);
   prim->createLineGrid("plane",140,140,40);
-  m_teapotMesh = new ngl::Obj("models/teapot.obj");
+  m_teapotMesh.reset(new ngl::Obj("models/teapot.obj"));
   m_teapotMesh->createVAO();
   //create a dynamic rigidbody
 
-  m_appleMesh = new ngl::Obj("models/apple.obj");
+  m_appleMesh.reset(new ngl::Obj("models/apple.obj"));
   m_appleMesh->createVAO();
   m_appleMesh->calcBoundingSphere();
   prim->createCapsule("defaultCap",0.5,1.0,20);
@@ -212,8 +212,6 @@ void NGLScene::initializeGL()
   shapes->addCylinder("cylinder",0.5f,1.0f);
   m_text.reset(new  ngl::Text(QFont("Arial",18)));
   m_text->setScreenSize(this->size().width(),this->size().height());
-
-
 }
 
 
