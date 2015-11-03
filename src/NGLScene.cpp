@@ -156,10 +156,6 @@ void NGLScene::initializeGL()
   glClearColor(0.4f, 0.4f, 0.4f, 1.0f);			   // Grey Background
   // enable depth testing for drawing
   glEnable(GL_DEPTH_TEST);
-  // we need to initialise the NGL lib, under windows and linux we also need to
-  // initialise GLEW, under windows this needs to be done in the app as well
-  // as the lib hence the WIN32 define
-  ngl::NGLInit::instance();
 
   // now to load the shader and set the values
   // grab an instance of shader manager
