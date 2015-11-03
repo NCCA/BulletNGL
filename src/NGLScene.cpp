@@ -38,9 +38,6 @@ NGLScene::NGLScene()
   m_physics->addGroundPlane(ngl::Vec3(0,0,0),ngl::Vec3(50,0.01,50));
   ngl::Random *rng=ngl::Random::instance();
   rng->setSeed();
-  m_width=1024;
-  m_height=720;
-
 }
 
 void NGLScene::addCube()
@@ -140,7 +137,12 @@ void NGLScene::resizeGL(QResizeEvent *_event)
   m_cam.setShape(45.0f,(float)width()/height(),0.05f,350.0f);
 }
 
-
+void NGLScene::resizeGL(int _w , int _h)
+{
+  m_cam.setShape(45.0f,(float)_w/_h,0.05f,350.0f);
+  m_width=_w*devicePixelRatio();
+  m_height=_h*devicePixelRatio();
+}
 
 void NGLScene::initializeGL()
 {
