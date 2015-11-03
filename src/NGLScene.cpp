@@ -38,6 +38,8 @@ NGLScene::NGLScene()
   m_physics->addGroundPlane(ngl::Vec3(0,0,0),ngl::Vec3(50,0.01,50));
   ngl::Random *rng=ngl::Random::instance();
   rng->setSeed();
+  m_width=1024;
+  m_height=720;
 
 }
 
