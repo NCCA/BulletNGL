@@ -1,5 +1,5 @@
-#ifndef COLLISIONSHAPE_H__
-#define COLLISIONSHAPE_H__
+#ifndef COLLISIONSHAPE_H_
+#define COLLISIONSHAPE_H_
 
 /// @brief simple class to store instances of bullet collision
 /// shapes this is a singleton so we only have one instance of

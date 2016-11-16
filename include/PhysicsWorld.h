@@ -1,5 +1,5 @@
-#ifndef PHYSICSWORLD_H__
-#define PHYSICSWORLD_H__
+#ifndef PHYSICSWORLD_H_
+#define PHYSICSWORLD_H_
 
 //----------------------------------------------------------------------------------------------------------------------
 /// @brief this is a minimal Facade wrapper for the code here
@@ -50,7 +50,7 @@ class PhysicsWorld
     void addImpulse(const ngl::Vec3 &_i);
     void * getUserData(unsigned int _index);
 
-    inline unsigned int getNumCollisionObjects()const
+    inline int getNumCollisionObjects()const
     {
       return m_dynamicsWorld->getNumCollisionObjects();
     }
@@ -75,7 +75,7 @@ class PhysicsWorld
     std::unique_ptr<btBroadphaseInterface> m_overlappingPairCache ;
     std::unique_ptr<btSequentialImpulseConstraintSolver> m_solver;
     std::unique_ptr<btDiscreteDynamicsWorld> m_dynamicsWorld;
-    btCollisionShape* m_groundShape;
+    std::shared_ptr<btCollisionShape> m_groundShape;
     std::vector <Body> m_bodies;
 };
 

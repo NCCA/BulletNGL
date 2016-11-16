@@ -51,7 +51,7 @@ void PhysicsWorld::addMesh(std::string _shapeName,const ngl::Vec3 &_pos)
 
 void PhysicsWorld::addGroundPlane(const ngl::Vec3 &_pos, const ngl::Vec3 &_size)
 {
-	m_groundShape = new btStaticPlaneShape(btVector3(0,1,0),_pos.m_y);
+  m_groundShape.reset( new btStaticPlaneShape(btVector3(0,1,0),_pos.m_y));
 
 	btTransform groundTransform;
 	groundTransform.setIdentity();
@@ -61,7 +61,7 @@ void PhysicsWorld::addGroundPlane(const ngl::Vec3 &_pos, const ngl::Vec3 &_size)
 
 			//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
 			btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
-			btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,m_groundShape,localInertia);
+      btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,m_groundShape.get(),localInertia);
 
 			btRigidBody* body = new btRigidBody(rbInfo);
 			body->setFriction(1.);
@@ -79,6 +79,7 @@ void PhysicsWorld::addGroundPlane(const ngl::Vec3 &_pos, const ngl::Vec3 &_size)
 
 PhysicsWorld::~PhysicsWorld()
 {
+
 }
 
 void PhysicsWorld::addSphere(std::string _shapeName,const ngl::Vec3 &_pos,ngl::Real _mass,const ngl::Vec3 &_inertia)
