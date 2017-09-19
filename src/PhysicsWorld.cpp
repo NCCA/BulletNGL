@@ -15,7 +15,7 @@ PhysicsWorld::PhysicsWorld()
 	///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
 	m_solver.reset(new btSequentialImpulseConstraintSolver);
 
-	m_dynamicsWorld.reset(new btDiscreteDynamicsWorld(m_dispatcher.get(),
+  m_dynamicsWorld.reset(new btDiscreteDynamicsWorld(m_dispatcher.get(),
 																										m_overlappingPairCache.get(),
 																										m_solver.get(),
 																										m_collisionConfiguration.get()));
@@ -102,6 +102,7 @@ startTransform.setOrigin(btVector3(_pos.m_x,_pos.m_y,_pos.m_z));
 //using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
 btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,colShape,localInertia);
+
 btRigidBody* body = new btRigidBody(rbInfo);
 body->setFriction(1.0);
 body->setRollingFriction(1.0);
@@ -138,7 +139,7 @@ void PhysicsWorld::addBox(std::string _shapeName,const ngl::Vec3 &_pos)
 
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,colShape,localInertia);
 	rbInfo.m_restitution = 0.1f;
-	rbInfo.m_friction = 100.5f;
+  rbInfo.m_friction = 100.5f;
 	rbInfo.m_additionalAngularDampingFactor=4.0;
 	rbInfo.m_additionalDamping=true;
 	btRigidBody* body = new btRigidBody(rbInfo);

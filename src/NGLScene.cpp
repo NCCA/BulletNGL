@@ -143,27 +143,27 @@ void NGLScene::initializeGL()
   // grab an instance of shader manager
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
   (*shader)["nglToonShader"]->use();
-  shader->setShaderParam4f("Colour",1,1,1,1);
+  shader->setUniform("Colour",1,1,1,1);
 
   (*shader)["nglDiffuseShader"]->use();
-  shader->setShaderParam4f("Colour",1,1,0,1);
-  shader->setShaderParam3f("lightPos",1,1,1);
-  shader->setShaderParam4f("lightDiffuse",1,1,1,1);
+  shader->setUniform("Colour",1.0f,1.0f,0.0f,1.0f);
+  shader->setUniform("lightPos",1.0f,1.0f,1.0f);
+  shader->setUniform("lightDiffuse",1.0f,1.0f,1.0f,1.0f);
 
   // Now we will create a basic Camera from the graphics library
   // This is a static camera so it only needs to be set once
   // First create Values for the camera position
-  ngl::Vec3 from(0,1,10);
-  ngl::Vec3 to(0,0,0);
-  ngl::Vec3 up(0,1,0);
+  ngl::Vec3 from(0.0f,1.0f,10.0f);
+  ngl::Vec3 to(0.0f,0.0f,0.0f);
+  ngl::Vec3 up(0.0f,1.0f,0.0f);
   // now load to our new camera
   m_cam.set(from,to,up);
   // set the shape using FOV 45 Aspect Ratio based on Width and Height
   // The final two are near and far clipping planes of 0.5 and 10
-  m_cam.setShape(50,(float)720.0/576.0,0.05,350);
+  m_cam.setShape(50.0f,(float)720.0/576.0,0.05f,350.0f);
   ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
-  prim->createSphere("sphere",0.5,40);
-  prim->createLineGrid("plane",140,140,40);
+  prim->createSphere("sphere",0.5f,40.0f);
+  prim->createLineGrid("plane",140.0f,140.0f,40.0f);
   m_teapotMesh.reset(new ngl::Obj("models/teapot.obj"));
   m_teapotMesh->createVAO();
   //create a dynamic rigidbody
@@ -207,8 +207,8 @@ void NGLScene::loadMatricesToShader()
   MVP= MV*m_cam.getVPMatrix();
   normalMatrix=MV;
   normalMatrix.inverse();
-  shader->setRegisteredUniform("MVP",MVP);
-  shader->setRegisteredUniform("normalMatrix",normalMatrix);
+  shader->setUniform("MVP",MVP);
+  shader->setUniform("normalMatrix",normalMatrix);
 }
 
 void NGLScene::paintGL()
@@ -244,41 +244,41 @@ void NGLScene::paintGL()
     m_bodyTransform=m_physics->getTransformMatrix(i);
 
     loadMatricesToShader();
-    shader->setRegisteredUniform("Colour",0.0f,0.0f,1.0f,1.0f);
+    shader->setUniform("Colour",0.0f,0.0f,1.0f,1.0f);
     switch(m_physics->getCollisionShape(i))
     {
       case BOX_SHAPE_PROXYTYPE :
-        shader->setRegisteredUniform("Colour",1.0f,0.0f,0.0f,1.0f);
+        shader->setUniform("Colour",1.0f,0.0f,0.0f,1.0f);
         prim->draw("cube");
       break;
       case SPHERE_SHAPE_PROXYTYPE :
-        shader->setRegisteredUniform("Colour",0.0f,1.0f,0.0f,1.0f);
+        shader->setUniform("Colour",0.0f,1.0f,0.0f,1.0f);
         prim->draw("sphere");
 
       break;
       case CAPSULE_SHAPE_PROXYTYPE :
-        shader->setRegisteredUniform("Colour",0.0f,0.0f,1.0f,1.0f);
+        shader->setUniform("Colour",0.0f,0.0f,1.0f,1.0f);
         prim->draw("defaultCap");
       break;
 
       case CONE_SHAPE_PROXYTYPE :
-        shader->setRegisteredUniform("Colour",0.0f,1.0f,1.0f,1.0f);
+        shader->setUniform("Colour",0.0f,1.0f,1.0f,1.0f);
         prim->draw("cone");
       break;
       case CYLINDER_SHAPE_PROXYTYPE :
-        shader->setRegisteredUniform("Colour",1.0f,1.0f,0.0f,1.0f);
+        shader->setUniform("Colour",1.0f,1.0f,0.0f,1.0f);
         prim->draw("cylinder");
       break;
       case 4 :
          std::string name=m_physics->getBodyNameAtIndex(i);
         if(name =="teapot")
         {
-          shader->setRegisteredUniform("Colour",1.0f,1.0f,0.0f,1.0f);
+          shader->setUniform("Colour",1.0f,1.0f,0.0f,1.0f);
           m_teapotMesh->draw();
         }
         else if(name =="apple")
         {
-          shader->setRegisteredUniform("Colour",0.0f,1.0f,0.0f,1.0f);
+          shader->setUniform("Colour",0.0f,1.0f,0.0f,1.0f);
           m_appleMesh->draw();
         }
       break;
@@ -286,7 +286,7 @@ void NGLScene::paintGL()
   }
 
 
-  shader->setShaderParam4f("Colour",1.0f,1.0f,1.0f,1.0f);
+  shader->setUniform("Colour",1.0f,1.0f,1.0f,1.0f);
 
   m_bodyTransform.identity();
   loadMatricesToShader();
