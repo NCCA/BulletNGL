@@ -2,10 +2,7 @@
 #include <QGuiApplication>
 
 #include "NGLScene.h"
-#include <ngl/Camera.h>
-#include <ngl/Light.h>
 #include <ngl/Transformation.h>
-#include <ngl/Material.h>
 #include <ngl/NGLInit.h>
 #include <ngl/VAOPrimitives.h>
 #include <ngl/ShaderLib.h>
@@ -22,8 +19,8 @@ NGLScene::NGLScene()
   m_bboxDraw=false;
   m_wireframe=false;
   m_physics.reset(new PhysicsWorld());
-  m_physics->setGravity(ngl::Vec3(0,-10,0));
-  m_physics->addGroundPlane(ngl::Vec3(0,0,0),ngl::Vec3(50,0.01,50));
+  m_physics->setGravity(ngl::Vec3(0.0f,-10.0f,0.0f));
+  m_physics->addGroundPlane(ngl::Vec3(0.0f,0.0f,0.0f),ngl::Vec3(50.0f,0.01f,50.0f));
   ngl::Random *rng=ngl::Random::instance();
   rng->setSeed();
 }
@@ -33,10 +30,10 @@ void NGLScene::addCube()
   ngl::Random *rng=ngl::Random::instance();
 
   ngl::Vec3 pos=rng->getRandomVec3();
-  pos*=10;
-  pos.m_y=10;
+  pos*=10.0f;
+  pos.m_y=10.0f;
   if(m_randomPlace == false)
-    pos.set(0,10,0);
+    pos.set(0.0f,10.0f,0.0f);
     m_physics->addBox("box",pos);
 }
 
@@ -46,11 +43,11 @@ void NGLScene::addSphere()
   ngl::Random *rng=ngl::Random::instance();
 
   ngl::Vec3 pos=rng->getRandomVec3();
-  pos*=10;
-  pos.m_y=10;
+  pos*=10.0f;
+  pos.m_y=10.0f;
   if(m_randomPlace == false)
-    pos.set(0,10,0);
-  m_physics->addSphere("sphere",pos,rng->randomPositiveNumber(5.0),rng->getRandomVec3()*20);
+    pos.set(0.0f,10.0f,0.0f);
+  m_physics->addSphere("sphere",pos,rng->randomPositiveNumber(5.0f),rng->getRandomVec3()*20.0f);
 
 }
 
@@ -60,10 +57,10 @@ void NGLScene::addCylinder()
   ngl::Random *rng=ngl::Random::instance();
 
   ngl::Vec3 pos=rng->getRandomVec3();
-  pos*=10;
-  pos.m_y=10;
+  pos*=10.0f;
+  pos.m_y=10.0f;
   if(m_randomPlace == false)
-    pos.set(0,10,0);
+    pos.set(0.0f,10.0f,0.0f);
   m_physics->addCylinder("cylinder",pos);
 
 }
@@ -74,10 +71,10 @@ void NGLScene::addCone()
   ngl::Random *rng=ngl::Random::instance();
 
   ngl::Vec3 pos=rng->getRandomVec3();
-  pos*=10;
-  pos.m_y=10;
+  pos*=10.0f;
+  pos.m_y=10.0f;
   if(m_randomPlace == false)
-    pos.set(0,10,0);
+    pos.set(0.0f,10.0f,0.0f);
   m_physics->addCone("cone",pos);
 
 }
@@ -119,7 +116,7 @@ NGLScene::~NGLScene()
 
 void NGLScene::resizeGL( int _w, int _h )
 {
-  m_cam.setShape( 45.0f, static_cast<float>( _w ) / _h, 0.05f, 350.0f );
+  m_project=ngl::perspective( 45.0f, static_cast<float>( _w ) / _h, 0.05f, 350.0f );
   m_win.width  = static_cast<int>( _w * devicePixelRatio() );
   m_win.height = static_cast<int>( _h * devicePixelRatio() );
 }
@@ -153,14 +150,14 @@ void NGLScene::initializeGL()
   // Now we will create a basic Camera from the graphics library
   // This is a static camera so it only needs to be set once
   // First create Values for the camera position
-  ngl::Vec3 from(0.0f,1.0f,10.0f);
+  ngl::Vec3 from(0.0f,5.0f,15.0f);
   ngl::Vec3 to(0.0f,0.0f,0.0f);
   ngl::Vec3 up(0.0f,1.0f,0.0f);
   // now load to our new camera
-  m_cam.set(from,to,up);
+  m_view=ngl::lookAt(from,to,up);
   // set the shape using FOV 45 Aspect Ratio based on Width and Height
   // The final two are near and far clipping planes of 0.5 and 10
-  m_cam.setShape(50.0f,(float)720.0/576.0,0.05f,350.0f);
+  m_project=ngl::perspective(45.0f,720.0f/576.0f,0.05f,350.0f);
   ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
   prim->createSphere("sphere",0.5f,40.0f);
   prim->createLineGrid("plane",140.0f,140.0f,40.0f);
@@ -206,8 +203,8 @@ void NGLScene::loadMatricesToShader()
   //MV=  m_bodyTransform*m_globalTransformMatrix*m_cam.getViewMatrix();
   //MVP= MV*m_cam.getVPMatrix();
 
-  MV = m_cam.getViewMatrix() * m_globalTransformMatrix * m_bodyTransform;
-  MVP = m_cam.getVPMatrix() * MV;
+  MV = m_view * m_globalTransformMatrix * m_bodyTransform;
+  MVP = m_project * MV;
 
   normalMatrix=MV;
 
@@ -241,7 +238,7 @@ void NGLScene::paintGL()
 
    // get the VBO instance and draw the built in teapot
   ngl::VAOPrimitives *prim=ngl::VAOPrimitives::instance();
-  unsigned int bodies=m_physics->getNumCollisionObjects();
+  size_t bodies=m_physics->getNumCollisionObjects();
   for(unsigned int i=1; i<bodies; ++i)
   {
 

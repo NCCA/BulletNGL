@@ -50,9 +50,9 @@ class PhysicsWorld
     void addImpulse(const ngl::Vec3 &_i);
     void * getUserData(unsigned int _index);
 
-    inline int getNumCollisionObjects()const
+    size_t getNumCollisionObjects()const
     {
-      return m_dynamicsWorld->getNumCollisionObjects();
+      return static_cast<size_t>(m_dynamicsWorld->getNumCollisionObjects());
     }
 
     ngl::Vec3 getPosition(unsigned int _index);
