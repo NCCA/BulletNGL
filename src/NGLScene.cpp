@@ -139,8 +139,6 @@ void NGLScene::initializeGL()
   // now to load the shader and set the values
   // grab an instance of shader manager
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
-  (*shader)["nglToonShader"]->use();
-  shader->setUniform("Colour",1,1,1,1);
 
   (*shader)["nglDiffuseShader"]->use();
   shader->setUniform("Colour",1.0f,1.0f,0.0f,1.0f);
