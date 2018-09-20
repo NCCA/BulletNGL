@@ -34,7 +34,7 @@ void NGLScene::addCube()
   pos.m_y=10.0f;
   if(m_randomPlace == false)
     pos.set(0.0f,10.0f,0.0f);
-    m_physics->addBox("box",pos);
+   m_physics->addBox("box",pos);
 }
 
 void NGLScene::addSphere()
