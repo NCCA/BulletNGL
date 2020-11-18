@@ -7,7 +7,7 @@
 #include "WindowParams.h"
 #include <QOpenGLWindow>
 #include <memory>
-#include <btBulletDynamicsCommon.h>
+#include <bullet/btBulletDynamicsCommon.h>
 #include <memory>
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -4,3 +4,15 @@
 Using the Bullet Physics with NGL, the demo has basic wrappers for the Physics world and rigid bodies, it also uses the ngl::Obj to load low-res collision meshes and uses higher detail ones for the drawing.
 
 For more details read the user [guide](http://bulletphysics.org/wordpress/) of Bullet.
+
+The easiest way to install this is with vcpkg
+
+```
+vcpkg install bullet3
+```
+
+For windows 
+
+```
+./vcpkg install bullet3:x64-windows
+```

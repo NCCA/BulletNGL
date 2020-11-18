@@ -21,15 +21,12 @@ NGLScene::NGLScene()
   m_physics.reset(new PhysicsWorld());
   m_physics->setGravity(ngl::Vec3(0.0f,-10.0f,0.0f));
   m_physics->addGroundPlane(ngl::Vec3(0.0f,0.0f,0.0f),ngl::Vec3(50.0f,0.01f,50.0f));
-  ngl::Random *rng=ngl::Random::instance();
-  rng->setSeed();
+  ngl::Random::setSeed();
 }
 
 void NGLScene::addCube()
 {
-  ngl::Random *rng=ngl::Random::instance();
-
-  ngl::Vec3 pos=rng->getRandomVec3();
+  ngl::Vec3 pos=ngl::Random::getRandomVec3();
   pos*=10.0f;
   pos.m_y=10.0f;
   if(m_randomPlace == false)
@@ -39,24 +36,18 @@ void NGLScene::addCube()
 
 void NGLScene::addSphere()
 {
-
-  ngl::Random *rng=ngl::Random::instance();
-
-  ngl::Vec3 pos=rng->getRandomVec3();
+  ngl::Vec3 pos=ngl::Random::getRandomVec3();
   pos*=10.0f;
   pos.m_y=10.0f;
   if(m_randomPlace == false)
     pos.set(0.0f,10.0f,0.0f);
-  m_physics->addSphere("sphere",pos,rng->randomPositiveNumber(5.0f),rng->getRandomVec3()*20.0f);
+  m_physics->addSphere("sphere",pos,ngl::Random::randomPositiveNumber(5.0f),ngl::Random::getRandomVec3()*20.0f);
 
 }
 
 void NGLScene::addCylinder()
 {
-
-  ngl::Random *rng=ngl::Random::instance();
-
-  ngl::Vec3 pos=rng->getRandomVec3();
+  ngl::Vec3 pos=ngl::Random::getRandomVec3();
   pos*=10.0f;
   pos.m_y=10.0f;
   if(m_randomPlace == false)
@@ -67,10 +58,7 @@ void NGLScene::addCylinder()
 
 void NGLScene::addCone()
 {
-
-  ngl::Random *rng=ngl::Random::instance();
-
-  ngl::Vec3 pos=rng->getRandomVec3();
+  ngl::Vec3 pos=ngl::Random::getRandomVec3();
   pos*=10.0f;
   pos.m_y=10.0f;
   if(m_randomPlace == false)
@@ -80,9 +68,7 @@ void NGLScene::addCone()
 }
 void NGLScene::addCapsule()
 {
-  ngl::Random *rng=ngl::Random::instance();
-
-  ngl::Vec3 pos=rng->getRandomVec3();
+  ngl::Vec3 pos=ngl::Random::getRandomVec3();
   pos*=10;
   pos.m_y=10;
   if(m_randomPlace == false)
@@ -92,9 +78,7 @@ void NGLScene::addCapsule()
 
 void NGLScene::addMesh(MeshType _m)
 {
-  ngl::Random *rng=ngl::Random::instance();
-
-  ngl::Vec3 pos=rng->getRandomVec3();
+  ngl::Vec3 pos=ngl::Random::getRandomVec3();
   pos*=10;
   pos.m_y=10;
   if(m_randomPlace == false)
@@ -125,7 +109,7 @@ void NGLScene::initializeGL()
 {
   // we must call this first before any other GL commands to load and link the
   // gl commands from the lib, if this is not done program will crash
-  ngl::NGLInit::instance();
+  ngl::NGLInit::initialize();
 
   glClearColor(0.4f, 0.4f, 0.4f, 1.0f);			   // Grey Background
   // enable depth testing for drawing
@@ -136,14 +120,10 @@ void NGLScene::initializeGL()
   // enable depth testing for drawing
   glEnable(GL_DEPTH_TEST);
 
-  // now to load the shader and set the values
-  // grab an instance of shader manager
-  ngl::ShaderLib *shader=ngl::ShaderLib::instance();
-
-  (*shader)["nglDiffuseShader"]->use();
-  shader->setUniform("Colour",1.0f,1.0f,0.0f,1.0f);
-  shader->setUniform("lightPos",1.0f,1.0f,1.0f);
-  shader->setUniform("lightDiffuse",1.0f,1.0f,1.0f,1.0f);
+  ngl::ShaderLib::use("nglDiffuseShader");
+  ngl::ShaderLib::setUniform("Colour",1.0f,1.0f,0.0f,1.0f);
+  ngl::ShaderLib::setUniform("lightPos",1.0f,1.0f,1.0f);
+  ngl::ShaderLib::setUniform("lightDiffuse",1.0f,1.0f,1.0f,1.0f);
 
   // Now we will create a basic Camera from the graphics library
   // This is a static camera so it only needs to be set once
@@ -156,9 +136,8 @@ void NGLScene::initializeGL()
   // set the shape using FOV 45 Aspect Ratio based on Width and Height
   // The final two are near and far clipping planes of 0.5 and 10
   m_project=ngl::perspective(45.0f,720.0f/576.0f,0.05f,350.0f);
-  ngl::VAOPrimitives *prim = ngl::VAOPrimitives::instance();
-  prim->createSphere("sphere",0.5f,40.0f);
-  prim->createLineGrid("plane",140.0f,140.0f,40.0f);
+  ngl::VAOPrimitives::createSphere("sphere",0.5f,40.0f);
+  ngl::VAOPrimitives::createLineGrid("plane",140.0f,140.0f,40.0f);
   m_teapotMesh.reset(new ngl::Obj("models/teapot.obj"));
   m_teapotMesh->createVAO();
   //create a dynamic rigidbody
@@ -166,9 +145,9 @@ void NGLScene::initializeGL()
   m_appleMesh.reset(new ngl::Obj("models/apple.obj"));
   m_appleMesh->createVAO();
   m_appleMesh->calcBoundingSphere();
-  prim->createCapsule("defaultCap",0.5,1.0,20);
-  prim->createCone("cone",0.5,1.0,20,20);
-  prim->createCylinder("cylinder",0.5,2.0,20,20);
+  ngl::VAOPrimitives::createCapsule("defaultCap",0.5,1.0,20);
+  ngl::VAOPrimitives::createCone("cone",0.5,1.0,20,20);
+  ngl::VAOPrimitives::createCylinder("cylinder",0.5,2.0,20,20);
 
  startTimer(10);
   // as re-size is not explicitly called we need to do this.
@@ -185,30 +164,24 @@ void NGLScene::initializeGL()
   shapes->addCapsule("capsule",0.5f,1.0f);
   shapes->addCone("cone",0.5f,2.0f);
   shapes->addCylinder("cylinder",0.5f,1.0f);
-  m_text.reset(new  ngl::Text(QFont("Arial",18)));
-  m_text->setScreenSize(this->size().width(),this->size().height());
+  m_text=std::make_unique<ngl::Text>("fonts/Arial.ttf",18);
+  m_text->setScreenSize(width(),height());
 }
 
 
 void NGLScene::loadMatricesToShader()
 {
-  ngl::ShaderLib *shader=ngl::ShaderLib::instance();
-
   ngl::Mat4 MV;
   ngl::Mat4 MVP;
   ngl::Mat3 normalMatrix;
-
-  //MV=  m_bodyTransform*m_globalTransformMatrix*m_cam.getViewMatrix();
-  //MVP= MV*m_cam.getVPMatrix();
-
   MV = m_view * m_globalTransformMatrix * m_bodyTransform;
   MVP = m_project * MV;
 
   normalMatrix=MV;
 
   normalMatrix.inverse().transpose();
-  shader->setUniform("MVP",MVP);
-  shader->setUniform("normalMatrix",normalMatrix);
+  ngl::ShaderLib::setUniform("MVP",MVP);
+  ngl::ShaderLib::setUniform("normalMatrix",normalMatrix);
 }
 
 void NGLScene::paintGL()
@@ -217,8 +190,7 @@ void NGLScene::paintGL()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glViewport(0,0,m_win.width,m_win.height);
   // grab an instance of the shader manager
-  ngl::ShaderLib *shader=ngl::ShaderLib::instance();
-  (*shader)["nglDiffuseShader"]->use();
+  ngl::ShaderLib::use("nglDiffuseShader");
 
   // Rotation based on the mouse position for our global transform
   ngl::Mat4 rotX;
@@ -227,15 +199,13 @@ void NGLScene::paintGL()
   rotX.rotateX(m_win.spinXFace);
   rotY.rotateY(m_win.spinYFace);
   // multiply the rotations
-  m_globalTransformMatrix=rotY*rotX;
+  m_globalTransformMatrix=rotX*rotY;
   // add the translations
   m_globalTransformMatrix.m_m[3][0] = m_modelPos.m_x;
   m_globalTransformMatrix.m_m[3][1] = m_modelPos.m_y;
   m_globalTransformMatrix.m_m[3][2] = m_modelPos.m_z;
   // set this in the TX stack
 
-   // get the VBO instance and draw the built in teapot
-  ngl::VAOPrimitives *prim=ngl::VAOPrimitives::instance();
   size_t bodies=m_physics->getNumCollisionObjects();
   for(unsigned int i=1; i<bodies; ++i)
   {
@@ -244,41 +214,41 @@ void NGLScene::paintGL()
     m_bodyTransform=m_physics->getTransformMatrix(i);
 
     loadMatricesToShader();
-    shader->setUniform("Colour",0.0f,0.0f,1.0f,1.0f);
+    ngl::ShaderLib::setUniform("Colour",0.0f,0.0f,1.0f,1.0f);
     switch(m_physics->getCollisionShape(i))
     {
       case BOX_SHAPE_PROXYTYPE :
-        shader->setUniform("Colour",1.0f,0.0f,0.0f,1.0f);
-        prim->draw("cube");
+        ngl::ShaderLib::setUniform("Colour",1.0f,0.0f,0.0f,1.0f);
+        ngl::VAOPrimitives::draw("cube");
       break;
       case SPHERE_SHAPE_PROXYTYPE :
-        shader->setUniform("Colour",0.0f,1.0f,0.0f,1.0f);
-        prim->draw("sphere");
+        ngl::ShaderLib::setUniform("Colour",0.0f,1.0f,0.0f,1.0f);
+        ngl::VAOPrimitives::draw("sphere");
 
       break;
       case CAPSULE_SHAPE_PROXYTYPE :
-        shader->setUniform("Colour",0.0f,0.0f,1.0f,1.0f);
-        prim->draw("defaultCap");
+        ngl::ShaderLib::setUniform("Colour",0.0f,0.0f,1.0f,1.0f);
+        ngl::VAOPrimitives::draw("defaultCap");
       break;
 
       case CONE_SHAPE_PROXYTYPE :
-        shader->setUniform("Colour",0.0f,1.0f,1.0f,1.0f);
-        prim->draw("cone");
+        ngl::ShaderLib::setUniform("Colour",0.0f,1.0f,1.0f,1.0f);
+        ngl::VAOPrimitives::draw("cone");
       break;
       case CYLINDER_SHAPE_PROXYTYPE :
-        shader->setUniform("Colour",1.0f,1.0f,0.0f,1.0f);
-        prim->draw("cylinder");
+        ngl::ShaderLib::setUniform("Colour",1.0f,1.0f,0.0f,1.0f);
+        ngl::VAOPrimitives::draw("cylinder");
       break;
       case 4 :
          std::string name=m_physics->getBodyNameAtIndex(i);
         if(name =="teapot")
         {
-          shader->setUniform("Colour",1.0f,1.0f,0.0f,1.0f);
+          ngl::ShaderLib::setUniform("Colour",1.0f,1.0f,0.0f,1.0f);
           m_teapotMesh->draw();
         }
         else if(name =="apple")
         {
-          shader->setUniform("Colour",0.0f,1.0f,0.0f,1.0f);
+          ngl::ShaderLib::setUniform("Colour",0.0f,1.0f,0.0f,1.0f);
           m_appleMesh->draw();
         }
       break;
@@ -286,15 +256,14 @@ void NGLScene::paintGL()
   }
 
 
-  shader->setUniform("Colour",1.0f,1.0f,1.0f,1.0f);
+  ngl::ShaderLib::setUniform("Colour",1.0f,1.0f,1.0f,1.0f);
 
   m_bodyTransform.identity();
   loadMatricesToShader();
 
-  prim->draw("plane");
+  ngl::VAOPrimitives::draw("plane");
   m_text->setColour(1,1,1);
-  QString text=QString("Number of Bodies=%2").arg(bodies-1);
-  m_text->renderText(10,18,text );
+  m_text->renderText(10,700,fmt::format("Number of Bodies={}",bodies-1) );
 
 
 }
