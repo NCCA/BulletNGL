@@ -7,6 +7,7 @@
 #include <ngl/VAOPrimitives.h>
 #include <ngl/ShaderLib.h>
 #include <ngl/Random.h>
+#include <iostream>
 #include "PhysicsWorld.h"
 #include "CollisionShape.h"
 
